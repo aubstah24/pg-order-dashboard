@@ -11,38 +11,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 function Dashboard() {
   const [tournaments, setTournaments] = useState([]);
-  const [filteredTournaments, setFilteredTournaments] = useState([]);
   const [selectedTournament, setSelectedTournament] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortBy, setSortBy] = useState("name");
   const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const filteredBySearch = filteredTournaments.filter((t) =>
-    Object.values(t).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
-
-  const handleSort = (column) => {
-    if (sortBy === column) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(column);
-      setSortOrder("asc");
-    }
-  };
-
-  const sortedTournaments = [...filteredTournaments].sort((a, b) => {
-    if (sortOrder === "asc") {
-      return a[sortBy] > b[sortBy] ? 1 : -1;
-    } else {
-      return a[sortBy] < b[sortBy] ? 1 : -1;
-    }
-  });
 
   useEffect(() => {
     fetchTournaments();
@@ -57,20 +29,53 @@ function Dashboard() {
     if (error) console.error("Error:", error);
     else {
       setTournaments(data);
-      setFilteredTournaments(data); // Set the initial filtered tournaments
     }
   }
 
+  const getFilteredAndSortedData = () => {
+    let data = [...tournaments];
+
+    // Filter by tournament
+    if (selectedTournament !== "") {
+      data = data.filter((t) => t.tournament?.includes(selectedTournament));
+    }
+
+    // Search filter
+    if (searchTerm !== "") {
+      data = data.filter((t) =>
+        Object.values(t).some((value) =>
+          value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+
+    // Sorting
+    data.sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a[sortBy] > b[sortBy] ? 1 : -1;
+      } else {
+        return a[sortBy] < b[sortBy] ? 1 : -1;
+      }
+    });
+
+    return data;
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortOrder("asc");
+    }
+  };
+
   function handleFilter(tournament) {
     setSelectedTournament(tournament);
-    if (tournament === "") {
-      setFilteredTournaments(tournaments); // Reset filter
-    } else {
-      const filteredData = tournaments.filter((t) =>
-        t.tournament?.includes(tournament)
-      );
-      setFilteredTournaments(filteredData);
-    }
   }
 
   function getTotal(design, sizes) {
@@ -203,8 +208,8 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {sortedTournaments.length > 0 ? (
-              sortedTournaments.map((t) => (
+            {getFilteredAndSortedData().length > 0 ? (
+              getFilteredAndSortedData().map((t) => (
                 <tr key={t.id}>
                   <td>{t.name}</td>
                   <td>{t.email}</td>
@@ -217,7 +222,7 @@ function Dashboard() {
             ) : (
               <tr>
                 <td colSpan="7" className="no-data">
-                  No records found.
+                  No pre-orders were recorded for this tournament.
                 </td>
               </tr>
             )}
