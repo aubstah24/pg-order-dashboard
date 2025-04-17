@@ -73,10 +73,12 @@ function Dashboard() {
     }
   }
 
-  function getTotal(design, amt) {
+  function getTotal(design, sizes) {
     const price = [25, 25, 25, 20, 20, 20]; // array of prices for each design
     const designIndex = parseInt(design.split(" ")[1]) - 1; //Get the # from the Design column
-    return amt * price[designIndex];
+    console.log(sizes.split(": ").split(", "));
+    //split and parse for integers, then sum up integers
+    return 1 * price[designIndex];
   }
 
   return (
@@ -185,10 +187,7 @@ function Dashboard() {
               <th onClick={() => handleSort("size")}>
                 Size {sortBy === "size" && (sortOrder === "asc" ? "↑" : "↓")}
               </th>
-              <th onClick={() => handleSort("quantity")}>
-                Quantity{" "}
-                {sortBy === "quantity" && (sortOrder === "asc" ? "↑" : "↓")}
-              </th>
+
               <th onClick={() => handleSort("tournament")}>
                 Tournament Pick-Up{" "}
                 {sortBy === "tournament" && (sortOrder === "asc" ? "↑" : "↓")}
@@ -205,7 +204,7 @@ function Dashboard() {
                   <td>{t.design}</td>
                   <td>{t.size}</td>
                   <td>{t.tournament}</td>
-                  <td>${getTotal(t.design, t.quantity).toFixed(2)}</td>{" "}
+                  <td>${getTotal(t.design, t.size).toFixed(2)}</td>{" "}
                 </tr>
               ))
             ) : (
