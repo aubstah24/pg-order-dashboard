@@ -92,3 +92,20 @@ html {
   padding: 1.5rem;
   color: #6b7280; /* Tailwind's gray-500 */
 }
+
+input {
+  margin: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .filter-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.2rem 0.75rem;
+    font-size: 0.6rem;
+  }
+}
