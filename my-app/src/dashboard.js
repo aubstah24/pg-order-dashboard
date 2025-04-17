@@ -204,7 +204,6 @@ function Dashboard() {
                   <td>{t.email}</td>
                   <td>{t.design}</td>
                   <td>{t.size}</td>
-                  <td>{t.quantity}</td>
                   <td>{t.tournament}</td>
                   <td>${getTotal(t.design, t.quantity).toFixed(2)}</td>{" "}
                 </tr>
