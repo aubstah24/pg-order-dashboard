@@ -76,9 +76,16 @@ function Dashboard() {
   function getTotal(design, sizes) {
     const price = [25, 25, 25, 20, 20, 20]; // array of prices for each design
     const designIndex = parseInt(design.split(" ")[1]) - 1; //Get the # from the Design column
-    console.log(sizes.split(": ").split(", "));
+
     //split and parse for integers, then sum up integers
-    return 1 * price[designIndex];
+    const sizeArray = sizes.split(": ");
+    const total = sizeArray.map((pair) => {
+      const match = pair.trim().match(/^\d+/);
+      return match ? parseInt(match[0]) : 0;
+    });
+
+    const amt = total.reduce((sum, qty) => sum + qty, 0);
+    return amt * price[designIndex];
   }
 
   return (
